@@ -25,6 +25,9 @@ class ViewController: UIViewController {
     @IBOutlet weak var kenny9: UIImageView!
     
     var score = 0
+    var timer = Timer()
+    var counter = 0
+    var hideTimer = Timer()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -76,6 +79,44 @@ class ViewController: UIViewController {
         kenny9.addGestureRecognizer(recognizer9)
         kenny9.isUserInteractionEnabled = true
         
+        
+        counter = 10
+        timeLabel.text = "Time: \(counter)"
+        timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(countdown), userInfo: nil, repeats: true)
+        
+    }
+    
+    @objc func countdown() {
+        counter -= 1
+        timeLabel.text = "Time: \(counter)"
+        
+        if counter == 0 {
+            timer.invalidate()
+            
+            let alert = UIAlertController(title: "Time's Up", message: "Do you want to play again?", preferredStyle: .alert)
+            
+            let okButton = UIAlertAction(title: "OK", style: .cancel, handler: nil)
+            
+            alert.addAction(okButton)
+            
+            let replayButton = UIAlertAction(title: "Replay", style: .default)
+            { _ in
+                self.replayGame()
+            }
+            alert.addAction(replayButton)
+            present(alert, animated: true, completion: nil)
+        }
+    }
+    
+    func replayGame() {
+        counter = 10
+        timeLabel.text = "Time: \(counter)"
+        
+        score = 0
+        timeLabel.text = "Score: \(score)"
+        
+        timer.invalidate()
+        timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(countdown), userInfo: nil, repeats: true)
     }
 
     @objc func increaseScore() {
