@@ -28,6 +28,7 @@ class ViewController: UIViewController {
     var timer = Timer()
     var counter = 0
     var hideTimer = Timer()
+    var kennyArray = [UIImageView]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -79,11 +80,24 @@ class ViewController: UIViewController {
         kenny9.addGestureRecognizer(recognizer9)
         kenny9.isUserInteractionEnabled = true
         
+        kennyArray = [kenny1, kenny2, kenny3, kenny4, kenny5, kenny6, kenny7, kenny8, kenny9]
+        hideKenny()
         
         counter = 10
         timeLabel.text = "Time: \(counter)"
         timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(countdown), userInfo: nil, repeats: true)
         
+        hideTimer = Timer.scheduledTimer(timeInterval: 0.5, target: self, selector: #selector(hideKenny), userInfo: nil, repeats: true)
+        
+    }
+    
+    @objc func hideKenny() {
+        for kenny in kennyArray {
+            kenny.isHidden = true
+        }
+
+        let random = Int.random(in: 0..<kennyArray.count)
+        kennyArray[random].isHidden = false
     }
     
     @objc func countdown() {
@@ -92,6 +106,11 @@ class ViewController: UIViewController {
         
         if counter == 0 {
             timer.invalidate()
+            hideTimer.invalidate()
+            
+            for kenny in kennyArray {
+                kenny.isHidden = true
+            }
             
             let alert = UIAlertController(title: "Time's Up", message: "Do you want to play again?", preferredStyle: .alert)
             
@@ -99,8 +118,7 @@ class ViewController: UIViewController {
             
             alert.addAction(okButton)
             
-            let replayButton = UIAlertAction(title: "Replay", style: .default)
-            { _ in
+            let replayButton = UIAlertAction(title: "Replay", style: .default) { _ in
                 self.replayGame()
             }
             alert.addAction(replayButton)
@@ -113,15 +131,30 @@ class ViewController: UIViewController {
         timeLabel.text = "Time: \(counter)"
         
         score = 0
-        timeLabel.text = "Score: \(score)"
+        scoreLabel.text = "Score: \(score)"
         
         timer.invalidate()
         timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(countdown), userInfo: nil, repeats: true)
+        
+        hideTimer.invalidate()
+
+        hideTimer = Timer.scheduledTimer(
+            timeInterval: 0.5,
+            target: self,
+            selector: #selector(hideKenny),
+            userInfo: nil,
+            repeats: true
+        )
+
+        hideKenny()
+        
     }
 
     @objc func increaseScore() {
-        score += 1
-        scoreLabel.text = "Score: \(score)"
+            score += 1
+            scoreLabel.text = "Score: \(score)"
     }
+
 }
+
 
