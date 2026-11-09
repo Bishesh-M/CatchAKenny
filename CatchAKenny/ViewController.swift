@@ -29,9 +29,14 @@ class ViewController: UIViewController {
     var counter = 0
     var hideTimer = Timer()
     var kennyArray = [UIImageView]()
+    var highScore = 0
+    let highScoreKey = "HighScore"
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        highScore = UserDefaults.standard.integer(forKey: highScoreKey)
+        highScoreLabel.text = "High Score: \(highScore)"
         
         scoreLabel.text = "Score: \(score)"
         kenny1.contentMode = .scaleAspectFit
@@ -107,6 +112,12 @@ class ViewController: UIViewController {
         if counter == 0 {
             timer.invalidate()
             hideTimer.invalidate()
+            
+            if score > highScore {
+                highScore = score
+                highScoreLabel.text = "High Score: \(highScore)"
+                UserDefaults.standard.set(highScore, forKey: highScoreKey)
+            }
             
             for kenny in kennyArray {
                 kenny.isHidden = true
